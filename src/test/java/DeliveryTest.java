@@ -1,4 +1,9 @@
 import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.logevents.SelenideLogger;
+import io.qameta.allure.selenide.AllureSelenide;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
@@ -13,14 +18,16 @@ import static com.codeborne.selenide.Selenide.open;
 public class DeliveryTest {
 
 
-    @BeforeEach
-    void setup() {
-        open("http://localhost:9999");
-    }
+    @BeforeAll
+    static void setUpAll() {
+        SelenideLogger.addListener("allure", new AllureSelenide());}
+    @AfterAll
+    static void tearDownAll() {    SelenideLogger.removeListener("allure");}
 
 
     @Test
     void shouldSuccessfulPlanAndReplanMeeting() {
+        open("http://localhost:9999");
         User user = DataGenerator.Registration.generateUser();
         $("span[data-test-id='city'] input").setValue(user.getCity());
         $("span[data-test-id='date'] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
